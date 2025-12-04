@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Verification System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header: Wallet / Status -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand">Digital Verification System</div>
+            <div class="wallet-controls">
+                <button id="walletButton" class="submit-btn small">Connect Wallet</button>
+                <span id="walletStatus" class="wallet-status">Not connected</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Decorative animated design (subtle background SVG) -->
+    <div class="animated-design" aria-hidden="true">
+        <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+            <path class="brush brush-1" d="M0,200 C150,100 350,300 600,200 C850,100 1050,300 1200,200 L1200,400 L0,400 Z" fill="#f6f5f3" />
+            <path class="brush brush-2" d="M0,260 C200,160 400,360 650,260 C900,160 1100,360 1200,260 L1200,400 L0,400 Z" fill="#e9e7e5" />
+        </svg>
+    </div>
+    <!-- Homepage -->
+    <div id="homepage" class="page active">
+        <div class="container">
+            <h1 class="main-title">Digital Verification System</h1>
+            <div class="role-selection">
+                <div class="role-box" onclick="selectRole('admin')">
+                    <h2>Admin</h2>
+                </div>
+                <div class="role-box" onclick="selectRole('hr')">
+                    <h2>HR</h2>
+                </div>
+                <div class="role-box" onclick="selectRole('user')">
+                    <h2>User</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Section -->
+    <div id="admin" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <h1 class="page-title">Admin Portal</h1>
+
+            <div class="form-card">
+                <div class="form-group">
+                    <label for="docTypeSelect">Document Type</label>
+                    <select id="docTypeSelect" onchange="showDocumentForm(this.value)">
+                        <option value="">Select Document Type</option>
+                        <option value="certificate">Certificate</option>
+                        <option value="marksheet">Marksheet</option>
+                        <option value="legal">Legal Document</option>
+                    </select>
+                </div>
+
+                <!-- Certificate Form -->
+                <form id="certificateForm" class="doc-form hidden">
+                    <div class="form-group">
+                        <label for="cert_name">Name *</label>
+                        <input type="text" id="cert_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cert_studentId">Student ID</label>
+                        <input type="text" id="cert_studentId">
+                    </div>
+                    <div class="form-group">
+                        <label for="cert_purpose">Purpose *</label>
+                        <input type="text" id="cert_purpose" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cert_type">Type of Certificate</label>
+                        <select id="cert_type">
+                            <option value="Participation">Participation</option>
+                            <option value="Appreciation">Appreciation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cert_mobile">User's Mobile No. *</label>
+                        <input type="tel" id="cert_mobile" placeholder="Without OTP verification" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cert_upload">Upload Certificate (&lt; 1MB PDF/JPEG)</label>
+                        <input type="file" id="cert_upload" accept=".pdf,.jpg,.jpeg">
+                    </div>
+                    <button type="submit" class="submit-btn">Issue Certificate</button>
+                </form>
+
+                <!-- Marksheet Form -->
+                <form id="marksheetForm" class="doc-form hidden">
+                    <div class="form-group">
+                        <label for="mark_name">Student Name *</label>
+                        <input type="text" id="mark_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_standard">Standard</label>
+                        <select id="mark_standard">
+                            <option value="X">X</option>
+                            <option value="XII">XII</option>
+                            <option value="GRAD">GRAD</option>
+                            <option value="DIPLOMA">DIPLOMA</option>
+                            <option value="HIGHER_STUDIES">HIGHER STUDIES</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_studentId">Student ID *</label>
+                        <input type="text" id="mark_studentId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_father">Father's Name *</label>
+                        <input type="text" id="mark_father" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_mother">Mother's Name *</label>
+                        <input type="text" id="mark_mother" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_maxTotal">Max Marks (Total)</label>
+                        <input type="number" id="mark_maxTotal">
+                    </div>
+
+                    <div id="subjectsContainer">
+                        <h3>Subjects (Up to 6)</h3>
+                        <div class="subject-row">
+                            <input type="text" placeholder="Subject 1 Name" id="sub1_name">
+                            <input type="number" placeholder="Max Marks" id="sub1_max">
+                            <input type="number" placeholder="Marks Obtained" id="sub1_obtained" onchange="calculateTotal()">
+                        </div>
+                        <div class="subject-row">
+                            <input type="text" placeholder="Subject 2 Name" id="sub2_name">
+                            <input type="number" placeholder="Max Marks" id="sub2_max">
+                            <input type="number" placeholder="Marks Obtained" id="sub2_obtained" onchange="calculateTotal()">
+                        </div>
+                        <div class="subject-row">
+                            <input type="text" placeholder="Subject 3 Name" id="sub3_name">
+                            <input type="number" placeholder="Max Marks" id="sub3_max">
+                            <input type="number" placeholder="Marks Obtained" id="sub3_obtained" onchange="calculateTotal()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Total Marks Obtained</label>
+                        <input type="text" id="mark_totalObtained" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Percentage</label>
+                        <input type="text" id="mark_percentage" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_grade">Grade</label>
+                        <input type="text" id="mark_grade">
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_email">Email of Student</label>
+                        <input type="email" id="mark_email">
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_mobile">User's Mobile No. *</label>
+                        <input type="tel" id="mark_mobile" placeholder="Without OTP verification" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mark_upload">Upload Document (&lt; 1MB)</label>
+                        <input type="file" id="mark_upload" accept=".pdf,.jpg,.jpeg">
+                    </div>
+                    <button type="submit" class="submit-btn">Issue Marksheet</button>
+                </form>
+
+                <!-- Legal Document Form -->
+                <form id="legalForm" class="doc-form hidden">
+                    <div class="form-group">
+                        <label for="legal_name">Name *</label>
+                        <input type="text" id="legal_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="legal_type">Type of Doc</label>
+                        <select id="legal_type">
+                            <option value="Adhar">Adhar</option>
+                            <option value="Pan">Pan</option>
+                            <option value="Voter_ID">Voter ID</option>
+                            <option value="DL">DL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="legal_email">Email *</label>
+                        <input type="email" id="legal_email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="legal_phone">Phone Number *</label>
+                        <input type="tel" id="legal_phone" placeholder="For Digilocker" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Digilocker Verification</label>
+                        <button type="button" class="verify-btn" onclick="verifyDigilocker()">Verify via Phone</button>
+                        <div id="digilockerStatus" class="status-message hidden"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="legal_mobile">User's Mobile No. *</label>
+                        <input type="tel" id="legal_mobile" placeholder="Without OTP verification" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="legal_upload">Upload Document (PDF/JPEG max 1MB)</label>
+                        <input type="file" id="legal_upload" accept=".pdf,.jpg,.jpeg">
+                    </div>
+                    <button type="submit" class="submit-btn">Issue Legal Document</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- HR Section -->
+    <div id="hr" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <h1 class="page-title">HR Verification Portal</h1>
+
+            <div class="form-card">
+                <div class="form-group">
+                    <label for="verifyHash">Hash Code / QR Input</label>
+                    <input type="text" id="verifyHash" placeholder="Enter document hash">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="termsCheckbox" required>
+                    <label for="termsCheckbox">I confirm that I have the authority to verify this document.</label>
+                </div>
+                <button class="submit-btn" onclick="verifyDocument()">Verify</button>
+
+                <div id="verificationResult" class="result-container hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Section -->
+    <div id="user" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <h1 class="page-title">User Portfolio</h1>
+
+            <div class="form-card">
+                <h2>Authentication Required</h2>
+                <div id="otpStep1">
+                    <div class="form-group">
+                        <label for="userPhone">Phone Number</label>
+                        <input type="tel" id="userPhone" placeholder="Enter your phone number">
+                    </div>
+                    <button class="submit-btn" onclick="sendOTP()">Send OTP</button>
+                </div>
+
+                <div id="otpStep2" class="hidden">
+                    <div class="form-group">
+                        <label for="otpInput">Enter OTP</label>
+                        <input type="text" id="otpInput" placeholder="6-digit OTP" maxlength="6">
+                    </div>
+                    <button class="submit-btn" onclick="verifyOTP()">Verify &amp; View</button>
+                </div>
+
+                <div id="portfolioView" class="hidden">
+                    <h2>Your Documents</h2>
+                    <div id="documentsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
